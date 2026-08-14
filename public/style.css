@@ -1,0 +1,248 @@
+:root {
+  --bg: #0a0c10;
+  --panel: #11151c;
+  --line: #1e2530;
+  --fg: #e6edf3;
+  --dim: #8b98a8;
+  --dimmer: #5b6673;
+  --left: #7dd3fc;
+  --right: #64748b;
+  --accent: #fbbf24;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, "Roboto Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.75;
+  font-feature-settings: "palt";
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+}
+
+/* ── ヒーロー ───────────────────────────────── */
+
+.hero { text-align: center; margin-bottom: 2.5rem; }
+
+h1 {
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
+  letter-spacing: 0.06em;
+  margin: 0 0 1.25rem;
+  font-weight: 600;
+}
+
+.lede { font-size: clamp(0.98rem, 2.6vw, 1.12rem); margin: 0 0 0.75rem; }
+.lede b { color: var(--left); font-weight: 600; }
+
+.sub { color: var(--dim); font-size: 0.88rem; margin: 0; }
+.sub b { color: var(--fg); font-weight: 600; }
+.sub sup { font-size: 0.7em; }
+
+/* ── 箱 ────────────────────────────────────── */
+
+.box-section { margin-bottom: 3rem; }
+
+.box-wrap {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #070910;
+}
+
+#box { display: block; width: 100%; height: auto; }
+
+.box-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--left);
+  opacity: 0;
+}
+.box-flash.on { animation: flash 620ms ease-out; }
+@keyframes flash {
+  0%   { opacity: 0.16; }
+  100% { opacity: 0; }
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.1rem;
+}
+
+.side { display: flex; align-items: baseline; gap: 0.5rem; }
+.side.right { justify-content: flex-end; }
+.side-label { color: var(--dim); font-size: 0.8rem; }
+.side-value {
+  font-family: var(--mono);
+  font-size: 1.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--left);
+  transition: color 200ms;
+}
+.side.right .side-value { color: var(--right); }
+
+.countdown { text-align: center; }
+.cd-label { display: block; color: var(--dimmer); font-size: 0.68rem; letter-spacing: 0.08em; }
+.cd-value {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  text-align: center;
+  color: var(--dimmer);
+  font-size: 0.76rem;
+  font-family: var(--mono);
+  margin: 0.85rem 0 0;
+}
+
+/* ── パネル ─────────────────────────────────── */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.4rem 1.3rem;
+  margin-bottom: 1.1rem;
+}
+
+.panel h2 {
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  font-weight: 600;
+  margin: 0 0 1.1rem;
+}
+.panel h2 small { color: var(--dimmer); font-weight: 400; letter-spacing: 0; }
+
+#spark { display: block; width: 100%; height: auto; margin-bottom: 1.2rem; }
+
+.kv { margin: 0; display: grid; gap: 0.55rem; }
+.kv > div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.kv dt { color: var(--dim); font-size: 0.84rem; margin: 0; }
+.kv dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-size: 0.92rem;
+}
+.kv.big dd { font-size: 1.05rem; }
+.kv dd .unit { color: var(--dimmer); font-size: 0.78em; margin-left: 0.3em; }
+.kv dd .when { display: block; color: var(--dimmer); font-size: 0.72rem; }
+
+.footnote {
+  color: var(--dimmer);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  margin: 1.1rem 0 0;
+}
+.footnote.dim { color: #3f4854; }
+.footnote a { color: var(--dim); }
+.footnote code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: #0a0d13;
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+}
+
+/* ── 確率の壁 ───────────────────────────────── */
+
+.walls { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+.walls li {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #161b23;
+}
+.walls li:last-child { border-bottom: 0; }
+.walls .mark { font-size: 0.9rem; color: var(--dimmer); }
+.walls li.cleared .mark { color: var(--accent); }
+.walls li.cleared .odds { color: var(--fg); }
+.walls .odds { font-family: var(--mono); color: var(--dimmer); font-variant-numeric: tabular-nums; }
+.walls .need { font-family: var(--mono); color: var(--dimmer); font-size: 0.78rem; white-space: nowrap; }
+.walls li.cleared .need { color: var(--dim); }
+.walls li.goal .odds { color: var(--left); }
+
+/* ── タイムマシン ───────────────────────────── */
+
+.tm { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+.tm input {
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  color-scheme: dark;
+}
+
+button {
+  background: #1c2530;
+  border: 1px solid #2a3644;
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+button:hover { background: #24303e; }
+button.ghost { background: transparent; color: var(--dim); }
+button.ghost:hover { background: #161b23; }
+
+/* ── フッター ───────────────────────────────── */
+
+footer { margin-top: 2.5rem; text-align: center; }
+
+.xpost {
+  display: inline-block;
+  border: 1px solid #2a3644;
+  border-radius: 999px;
+  padding: 0.6rem 1.8rem;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+.xpost:hover { background: #161b23; }
+
+footer .footnote { text-align: left; }
+
+/* ── レスポンシブ ───────────────────────────── */
+
+@media (max-width: 480px) {
+  main { padding: 2rem 0.9rem 3.5rem; }
+  .panel { padding: 1.1rem 1rem; }
+  .side-value { font-size: 1.5rem; }
+  .kv > div { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+  .kv dd { text-align: left; }
+  .walls li { grid-template-columns: 1.2rem 1fr; }
+  .walls .need { grid-column: 2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box-flash.on { animation: none; }
+}

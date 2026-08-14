@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ポアンカレの箱 — 100個の粒子が全部左半分に集まる日まで</title>
+<meta name="description" content="密閉された箱の中の100個の粒子が、全部左半分に集まる瞬間を待ち続けています。理論上それは必ず起きます。期待待ち時間は約1.2×10²⁴年です。">
+<meta property="og:title" content="ポアンカレの箱">
+<meta property="og:description" content="熱力学第二法則は破れます。待てる人がいないだけです。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="./style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0c10'/><circle cx='8' cy='11' r='2' fill='%237dd3fc'/><circle cx='13' cy='20' r='2' fill='%237dd3fc'/><circle cx='7' cy='23' r='2' fill='%237dd3fc'/><circle cx='23' cy='14' r='2' fill='%23475569'/><line x1='16' y1='2' x2='16' y2='30' stroke='%23334155' stroke-width='1'/></svg>">
+</head>
+<body>
+
+<main>
+  <header class="hero">
+    <h1>ポアンカレの箱</h1>
+    <p class="lede">
+      密閉された箱に <b>100個</b> の粒子が入っています。<br>
+      全部が左半分に集まる瞬間を待っています。
+    </p>
+    <p class="sub">理論上、それは<b>必ず</b>起きます。期待待ち時間は約 <b>1.2×10<sup>24</sup></b> 年です。</p>
+  </header>
+
+  <section class="box-section">
+    <div class="box-wrap">
+      <canvas id="box" width="900" height="420" aria-label="粒子の入った箱"></canvas>
+      <div class="box-flash" id="flash" aria-hidden="true"></div>
+    </div>
+
+    <div class="readout">
+      <div class="side">
+        <span class="side-label">左</span>
+        <span class="side-value" id="left-count">–</span>
+      </div>
+      <div class="countdown">
+        <span class="cd-label">次の観測まで</span>
+        <span class="cd-value" id="countdown">--</span>
+      </div>
+      <div class="side right">
+        <span class="side-label">右</span>
+        <span class="side-value" id="right-count">–</span>
+      </div>
+    </div>
+
+    <p class="note" id="observed-at">—</p>
+  </section>
+
+  <section class="panel" id="today-panel">
+    <h2><span id="today-date">—</span> のログ <small>(<span id="today-obs">0</span> 回の観測)</small></h2>
+    <canvas id="spark" width="1200" height="90" aria-label="本日の観測の推移"></canvas>
+    <dl class="kv">
+      <div><dt>本日の最高記録</dt><dd id="today-max">—</dd></div>
+      <div><dt>本日の最小エントロピー</dt><dd id="today-entropy">—</dd></div>
+      <div><dt>本日エントロピーが減少した回数</dt><dd id="today-drops">—</dd></div>
+    </dl>
+    <p class="footnote">
+      エントロピーの減少は「熱力学第二法則が破れた」状態です。1日あたり約1,300回、
+      観測のおよそ45%で起きています。誰も気づかないほど小さいだけで、法則は統計的なものにすぎません。
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>統計</h2>
+    <dl class="kv big">
+      <div><dt>総観測回数</dt><dd id="total-obs">—</dd></div>
+      <div><dt>最高記録</dt><dd id="best">—</dd></div>
+      <div><dt>その希少度</dt><dd id="best-odds">—</dd></div>
+      <div><dt>突破した壁</dt><dd id="walls-count">—</dd></div>
+    </dl>
+  </section>
+
+  <section class="panel">
+    <h2>確率の壁</h2>
+    <ol class="walls" id="walls"></ol>
+  </section>
+
+  <section class="panel">
+    <h2>タイムマシン</h2>
+    <p class="footnote">
+      粒子の配置は保存されていません。<code>SHA-256(seed:tick)</code> から毎回計算しているので、
+      過去のどの瞬間でも完全に復元できます。下の計算はすべてあなたのブラウザで行われます。
+    </p>
+    <div class="tm">
+      <input type="datetime-local" id="tm-input" step="30">
+      <button id="tm-go">その瞬間を見る</button>
+      <button id="tm-now" class="ghost">現在に戻る</button>
+    </div>
+    <p class="note" id="tm-status"></p>
+  </section>
+
+  <footer>
+    <a class="xpost" id="xpost" href="#" target="_blank" rel="noopener">X でポスト</a>
+    <p class="footnote">
+      粒子の動きは演出です。判定は30秒ごとの独立サンプリングで、
+      観測されるまで配置は確定していません。
+      検証コードは <a href="./core.js">core.js</a>（seed と導出ロジックの全体）にあります。
+    </p>
+    <p class="footnote dim">
+      ポアンカレの回帰定理 — 有限の閉じた系は、確率1で初期状態の任意の近傍に無限回戻る。
+    </p>
+  </footer>
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

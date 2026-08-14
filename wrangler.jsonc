@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "poincare-box",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-13",
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "poincare-box-db",
+      "database_id": "98673595-ed7e-4f3b-9620-f3a27b622127"
+    }
+  ],
+  // 日次で追いつき集計。30秒刻みは tick から決定論的に導出されるので
+  // Cron Trigger の最短 1 分制約は関係ない。
+  "triggers": {
+    "crons": ["17 15 * * *"] // 毎日 00:17 JST
+  },
+  "observability": {
+    "enabled": true
+  }
+}
