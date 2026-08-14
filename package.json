@@ -8,6 +8,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "verify": "node tools/verify.mjs",
+    "og": "node tools/make-og.mjs",
     "db:local": "wrangler d1 execute poincare-box-db --local --file=db/schema.sql",
     "db:remote": "wrangler d1 execute poincare-box-db --remote --file=db/schema.sql",
     "tail": "wrangler tail"

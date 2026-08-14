@@ -23,15 +23,18 @@ public/core.js    凍結コア（SEED・同期版 SHA-256・configAt/leftCount/e
 public/index.html 画面
 public/app.js     Canvas 描画・観測演出・タイムマシン。配置はブラウザ側で計算する
 public/style.css
+public/og.png     OG 画像（tools/make-og.mjs の生成物。手で描かない）
 src/index.js      Worker。/api/state（追いつき集計）・/api/at（純粋計算）・scheduled
 db/schema.sql     meta / records / daily。集計だけを持つ
 tools/verify.mjs  検証ツール（node:crypto 一致確認＋走査シミュレーション）
+tools/make-og.mjs OG 画像ジェネレータ（実在 tick の配置を描く。macOS + Chrome 必須）
 ```
 
 ## コマンド
 
 ```bash
 npm run verify   # 必ず変更前後で走らせる。SHA-256 一致と決定論を検証
+npm run og       # public/og.png を再生成（固定 tick なので普段は不要）
 npm run dev      # wrangler dev
 npm run db:local # ローカル D1 にスキーマ適用
 npm run deploy
