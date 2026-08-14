@@ -32,18 +32,25 @@ async function catchUp(env) {
   const now = tickAt();
   if (now < 0) return { from: 0, to: -1, scanned: 0 }; // EPOCH 前
 
-  const row = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind('last_tick').first();
-  const last = row ? Number(row.value) : -1;
+  // daily の絞り込み範囲を知るための先読み。値そのものは信用しない。
+  const probe = await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind('last_tick').first();
+  const probeFrom = Math.max(0, (probe ? Number(probe.value) : -1) + 1);
+
+  // last_tick と集計は必ず同一トランザクションで読む。別々に読むと、その隙間に
+  // 他のリクエストが書き戻したぶんの上にもう一度同じ tick を加算してしまい、
+  // 絶対値で書き戻しても二重カウントが固定化する。
+  // last_tick は単調増加なので、先読みの probeFrom で絞った daily は必要な範囲を必ず含む。
+  const [metaRows, recordRows, dailyRows] = await env.DB.batch([
+    env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind('last_tick'),
+    env.DB.prepare('SELECT k, first_tick, hit_count FROM records'),
+    env.DB.prepare('SELECT * FROM daily WHERE day >= ?').bind(dayKey(probeFrom)),
+  ]);
+
+  const last = metaRows.results.length ? Number(metaRows.results[0].value) : -1;
   if (last >= now) return { from: last + 1, to: last, scanned: 0 };
 
   const from = last + 1;
   const to = Math.min(now, from + MAX_SCAN - 1);
-
-  // 既存の集計を読み込んでメモリ上でマージする (書き込み回数を最小化)
-  const [recordRows, dailyRows] = await Promise.all([
-    env.DB.prepare('SELECT k, first_tick, hit_count FROM records').all(),
-    env.DB.prepare('SELECT * FROM daily WHERE day >= ?').bind(dayKey(from)).all(),
-  ]);
 
   /** @type {Map<number, {first_tick: number, hit_count: number}>} */
   const records = new Map(recordRows.results.map((r) => [r.k, { first_tick: r.first_tick, hit_count: r.hit_count }]));
@@ -207,13 +214,20 @@ export default {
     if (url.pathname === '/api/at') {
       const raw = url.searchParams.get('tick') ?? url.searchParams.get('t');
       const at = url.searchParams.get('at');
+      const now = tickAt();
       let tick;
+      let explicit = true;
       if (raw !== null) tick = Number(raw);
       else if (at !== null) tick = Math.floor((Date.parse(at) - EPOCH_MS) / TICK_MS);
-      else tick = tickAt();
+      else { tick = now; explicit = false; }
 
       if (!Number.isFinite(tick)) return json({ error: 'invalid tick' }, { status: 400 });
-      tick = Math.max(0, Math.min(Math.floor(tick), tickAt()));
+      const requested = Math.floor(tick);
+      tick = Math.max(0, Math.min(requested, now));
+
+      // 明示指定かつクランプされなかった場合だけ、URL に対する純粋関数になるので永久キャッシュしてよい。
+      // 未指定・未来指定・負値指定は「現在」に丸められるため、キャッシュすると古い現在が固定されてしまう。
+      const pinned = explicit && requested === tick;
 
       const k = leftCount(tick);
       return json({
@@ -224,7 +238,7 @@ export default {
         bits: toBase64(configAt(tick)),
         entropy: entropy(k),
         odds: tailOdds(k),
-      }, { headers: { 'cache-control': 'public, max-age=31536000, immutable' } });
+      }, { headers: { 'cache-control': pinned ? 'public, max-age=31536000, immutable' : 'no-store' } });
     }
 
     return env.ASSETS.fetch(request);

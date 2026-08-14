@@ -195,6 +195,39 @@ function step(now) {
       if (p.y < PAD) { p.y = PAD; p.vy = Math.abs(p.vy); }
       if (p.y > BOX_H - PAD) { p.y = BOX_H - PAD; p.vy = -Math.abs(p.vy); }
     }
+    collidePairs();
+  }
+}
+
+/**
+ * 等質量の弾性衝突。中心線方向の速度成分だけを交換する（運動量・運動エネルギーを保存）。
+ * 判定には一切関与しない演出だが、粒子がすり抜けないほうが気体らしく見える。
+ */
+function collidePairs() {
+  const d = R * 2;
+  for (let i = 0; i < N; i++) {
+    const a = particles[i];
+    for (let j = i + 1; j < N; j++) {
+      const b = particles[j];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= d * d || d2 === 0) continue;
+
+      const dist = Math.sqrt(d2);
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      // 近づいている対だけ弾く。めり込み中に何度も反射して振動するのを防ぐ。
+      const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+      if (rel >= 0) continue;
+      a.vx += rel * nx; a.vy += rel * ny;
+      b.vx -= rel * nx; b.vy -= rel * ny;
+
+      const push = (d - dist) / 2;
+      a.x -= nx * push; a.y -= ny * push;
+      b.x += nx * push; b.y += ny * push;
+    }
   }
 }
 
@@ -276,8 +309,8 @@ function renderState(s) {
       `<span class="when">初出 ${fmtDate(s.total.bestAtMs)}</span>`;
     $('best-odds').textContent = formatOdds(s.total.bestOdds);
   }
-  const cleared = s.walls.filter((w) => w.cleared).length;
-  $('walls-count').innerHTML = `${cleared} <span class="unit">/ ${s.walls.length}</span>`;
+  const clearedWalls = s.walls.filter((w) => w.cleared);
+  $('walls-count').innerHTML = `${clearedWalls.length} <span class="unit">/ ${s.walls.length}</span>`;
 
   // 本日
   $('today-date').textContent = s.today.day;
@@ -291,9 +324,13 @@ function renderState(s) {
   renderWalls(s.walls);
   sparkDirty = true;
 
+  // 「突破した壁」は、はしごに実在する段を名乗る。記録そのものの希少度 (bestOdds) は
+  //  はしごの刻みと一致しないので、そのまま壁として書くと存在しない壁になる。
+  const topWall = clearedWalls[clearedWalls.length - 1];
   const text =
-    `ポアンカレの箱：${nf(s.total.observations)}回の観測で、最高記録は左に${s.total.bestK}個。` +
-    `${formatOdds(s.total.bestOdds)} の壁を突破しました。` +
+    `ポアンカレの箱：${nf(s.total.observations)}回の観測で、最高記録は左に${s.total.bestK}個` +
+    `（${formatOdds(s.total.bestOdds)}）。` +
+    (topWall ? `${formatOdds(topWall.odds)} の壁を突破しました。` : '') +
     `100個すべてが左半分に集まる日を待っています。`;
   $('xpost').href =
     `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.origin + location.pathname)}`;
