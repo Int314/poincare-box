@@ -1,0 +1,26 @@
+name: test
+
+# デプロイは手動（npm run deploy）のまま。CI は依存更新（wrangler bump 等）で
+# バンドル生成・wrangler 設定・core.js の決定論性が壊れていないことを検証する（認証不要・本番に触れない）。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate worker bundle (dry-run)
+        run: npx wrangler deploy --dry-run --outdir /tmp/wrangler-dry-run
+      # SHA-256 の node:crypto 一致・決定論性・壁の実測。tick 数は CI 向けに絞る
+      # （既定の 551,241 tick は公開検証用。ここでは回帰検知が目的）。
+      - name: Verify core.js determinism
+        run: node tools/verify.mjs 50000
