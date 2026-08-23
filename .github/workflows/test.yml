@@ -17,6 +17,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # ローカルと同じ npm 11 に揃える（Node 22 同梱の npm 10 は Dependabot=npm 11 産
+      # lockfile の npm ci が落ちる）
+      - run: npm install -g npm@11
       - run: npm ci
       - name: Validate worker bundle (dry-run)
         run: npx wrangler deploy --dry-run --outdir /tmp/wrangler-dry-run
