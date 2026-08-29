@@ -42,6 +42,12 @@ npm run deploy
 
 ローカルプレビューはワークスペース直下の `.claude/launch.json` の `poincare-dev` を使う。
 
+## CI（2026-08-24 新設）
+
+`.github/workflows/test.yml` が push / PR で `npm ci`（npm@11 揃え）→ `wrangler deploy --dry-run` →
+**`node tools/verify.mjs 50000`**（core.js の決定論検証）を実行する。凍結条項を壊す変更をマージ前に落とすのが目的。
+デプロイは手動（`npm run deploy`）。Dependabot は `.github/dependabot.yml`（週次・minor/patch グループ）。
+
 ## デプロイ前の手順
 
 1. `npx wrangler d1 create poincare-box-db`
