@@ -24,6 +24,8 @@ public/index.html 画面
 public/app.js     Canvas 描画・観測演出・タイムマシン。配置はブラウザ側で計算する
 public/style.css
 public/og.png     OG 画像（tools/make-og.mjs の生成物。手で描かない）
+public/robots.txt SEO: クローラー許可 + sitemap 参照
+public/sitemap.xml SEO: 索引対象ページ一覧（今は / のみ）
 src/index.js      Worker。/api/state（追いつき集計）・/api/at（純粋計算）・scheduled
 db/schema.sql     meta / records / daily。集計だけを持つ
 tools/verify.mjs  検証ツール（node:crypto 一致確認＋走査シミュレーション）

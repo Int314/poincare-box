@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://poincare-box.int314code.workers.dev/sitemap.xml
