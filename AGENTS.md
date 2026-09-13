@@ -48,7 +48,7 @@ npm run deploy
 
 `.github/workflows/test.yml` が push / PR で `npm ci`（npm@11 揃え）→ `wrangler deploy --dry-run` →
 **`node tools/verify.mjs 50000`**（core.js の決定論検証）を実行する。凍結条項を壊す変更をマージ前に落とすのが目的。
-デプロイは手動（`npm run deploy`）。Dependabot は `.github/dependabot.yml`（週次・minor/patch グループ）。
+デプロイは手動（`npm run deploy`）。Dependabot は `.github/dependabot.yml`（週次・dev 束＋runtime minor/patch 束・cooldown あり。方針は int314/AGENTS.md）。
 
 ## デプロイ前の手順
 

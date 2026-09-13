@@ -8,11 +8,19 @@ updates:
       time: "06:00"
       timezone: "Asia/Tokyo"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
     groups:
-      minor-and-patch:
-        update-types:
-          - "minor"
-          - "patch"
+      # devDependencies はメジャー込みで週 1 束（CI が全部拾う）
+      dev:
+        dependency-type: "development"
+        patterns: ["*"]
+      # dependencies は minor/patch だけ束ね、メジャーは個別 PR で目視
+      runtime:
+        dependency-type: "production"
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -22,8 +30,9 @@ updates:
       time: "06:00"
       timezone: "Asia/Tokyo"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
     groups:
-      minor-and-patch:
-        update-types:
-          - "minor"
-          - "patch"
+      actions:
+        patterns: ["*"]
