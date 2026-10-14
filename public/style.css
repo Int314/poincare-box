@@ -104,6 +104,16 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
+.plain {
+  text-align: center;
+  color: var(--dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 1rem 0 0;
+  text-wrap: balance;
+}
+.plain b { color: var(--fg); font-weight: 600; }
+
 .note {
   text-align: center;
   color: var(--dimmer);

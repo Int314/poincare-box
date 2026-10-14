@@ -21,6 +21,32 @@ function formatOdds(odds) {
   return `1/${(odds / 10 ** e).toFixed(2)}×10${sup(e)}`;
 }
 
+/** 頻度を「およそ N 回に 1 回」の口語に。大きすぎる値は formatOdds の指数表記に逃がす */
+function formatFrequency(odds) {
+  if (!Number.isFinite(odds)) return '—';
+  if (odds < 1e5) return `およそ ${nf(Math.round(odds))} 回に 1 回`;
+  return `およそ ${formatOdds(odds)} の頻度`;
+}
+
+/**
+ * 観測結果を平文 1 文にする。左の個数 k を「どれくらい珍しいか」と「ゴールまでの距離」に翻訳する。
+ * 右寄り（k < 50）は珍しさを語らない（このサイトのゴールは「全部左」なので、右寄りは単にありふれた配置）。
+ * @param {number} k 左の粒子数
+ */
+function plainSentence(k) {
+  const rest = N - k;
+  const el = $('observed-plain');
+  el.replaceChildren();
+  const strong = (text) => { const b = document.createElement('b'); b.textContent = text; return b; };
+  if (k > N / 2) {
+    el.append('左に ', strong(`${k} 個`), `。ここまで左に偏るのは ${formatFrequency(tailOdds(k))}。全部左まであと `, strong(`${rest} 個`), '。');
+  } else if (k === N / 2) {
+    el.append('左右ちょうど ', strong('50 個ずつ'), '。いちばんありふれた配置です。全部左まであと ', strong(`${rest} 個`), '。');
+  } else {
+    el.append('左に ', strong(`${k} 個`), '（右寄り）。ありふれた配置です。全部左まであと ', strong(`${rest} 個`), '。');
+  }
+}
+
 const JST = { timeZone: 'Asia/Tokyo' };
 const fmtDateTime = (ms) =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -153,6 +179,7 @@ function observe(tick, { animate = true, freeze = false } = {}) {
 
   $('left-count').textContent = view.k;
   $('right-count').textContent = N - view.k;
+  plainSentence(view.k);
   $('observed-at').textContent = `${fmtDateTime(tickToMs(tick))} の観測 · tick ${nf(tick)} · エントロピー ${entropy(view.k).toFixed(4)}`;
 
   if (!animate) flash();
@@ -478,6 +505,7 @@ if (urlTick !== null && Number.isFinite(Number(urlTick))) {
 } else if (startTick >= 0) {
   observe(startTick, { animate: false });
 } else {
+  $('observed-plain').textContent = '—';
   $('observed-at').textContent = '実験はまもなく開始されます。';
 }
 
