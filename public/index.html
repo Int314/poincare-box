@@ -57,6 +57,17 @@
 
     <!-- 観測のたびに「いま何が起きたか」を平文で 1 文（数字の行だけでは意味が伝わらないため） -->
     <p class="plain" id="observed-plain">—</p>
+    <!-- ゴールまでの距離（0〜100）。「最高 72 個」が数字だけだと遠さが伝わらない -->
+    <div class="distance" id="distance" aria-label="全部左までの距離">
+      <div class="distance-track">
+        <span class="distance-fill" id="distance-fill"></span>
+        <i class="distance-mark avg" style="left: 50%"><b>平均 50</b></i>
+        <i class="distance-mark best" id="distance-best" hidden><b>最高</b></i>
+        <i class="distance-mark now" id="distance-now"><b>今</b></i>
+        <i class="distance-mark goal" style="left: 100%"><b>ゴール 100</b></i>
+      </div>
+    </div>
+    <p class="how">30 秒ごとに箱を「観測」して、左半分にある粒子を数えます。粒子の動きは演出で、判定はこの数だけです。</p>
     <p class="note" id="observed-at">—</p>
   </section>
 

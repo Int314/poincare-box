@@ -114,6 +114,22 @@ h1 {
 }
 .plain b { color: var(--fg); font-weight: 600; }
 
+/* ゴールまでの距離 */
+.distance { margin: 1.2rem auto 0; max-width: 520px; padding: 0 2.6rem 2.6rem; }
+.distance-track { position: relative; height: 6px; border-radius: 999px; background: var(--line); }
+.distance-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--left); opacity: 0.55; transition: width 0.6s ease; }
+.distance-mark { position: absolute; top: 50%; width: 2px; height: 14px; margin-left: -1px; transform: translateY(-50%); background: var(--dim); }
+.distance-mark b { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-weight: 400; font-size: 0.68rem; color: var(--dimmer); letter-spacing: 0.04em; font-family: var(--mono); }
+.distance-mark.now { background: var(--left); height: 18px; width: 3px; margin-left: -1.5px; }
+.distance-mark.now b { color: var(--left); font-weight: 600; top: auto; bottom: 16px; }
+/* ラベルの衝突回避: 今・ゴールは上段、平均は下段 1 行目、最高は下段 2 行目。ゴールだけ右寄せ */
+.distance-mark.best { background: var(--accent); }
+.distance-mark.best b { color: var(--accent); top: 32px; } /* 平均と同じ段に置くと 50〜80 で重なるので 2 段目 */
+.distance-mark.goal { background: var(--fg); }
+.distance-mark.goal b { color: var(--fg); transform: translateX(-100%); left: 2px; top: auto; bottom: 16px; }
+.distance-mark.avg b { transform: translateX(-50%); }
+.how { text-align: center; color: var(--dim); font-size: 0.82rem; line-height: 1.7; margin: 0.6rem 0 0; text-wrap: balance; }
+
 .note {
   text-align: center;
   color: var(--dimmer);

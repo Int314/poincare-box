@@ -47,6 +47,20 @@ function plainSentence(k) {
   }
 }
 
+/** 距離バー: 今の k と最高記録の位置を 0〜100 に置く（最高はまだ無ければ出さない） */
+function renderDistance(k, bestK) {
+  const pct = (v) => `${Math.max(0, Math.min(100, (v / N) * 100))}%`;
+  $('distance-fill').style.width = pct(k);
+  $('distance-now').style.left = pct(k);
+  $('distance-now').querySelector('b').textContent = `今 ${k}`;
+  const best = $('distance-best');
+  if (bestK) {
+    best.hidden = false;
+    best.style.left = pct(bestK);
+    best.querySelector('b').textContent = `最高 ${bestK}`;
+  }
+}
+
 const JST = { timeZone: 'Asia/Tokyo' };
 const fmtDateTime = (ms) =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -180,6 +194,7 @@ function observe(tick, { animate = true, freeze = false } = {}) {
   $('left-count').textContent = view.k;
   $('right-count').textContent = N - view.k;
   plainSentence(view.k);
+  renderDistance(view.k, lastState?.total?.bestK);
   $('observed-at').textContent = `${fmtDateTime(tickToMs(tick))} の観測 · tick ${nf(tick)} · エントロピー ${entropy(view.k).toFixed(4)}`;
 
   if (!animate) flash();
@@ -336,6 +351,7 @@ function renderState(s) {
       `<span class="when">初出 ${fmtDate(s.total.bestAtMs)}</span>`;
     $('best-odds').textContent = formatOdds(s.total.bestOdds);
   }
+  if (view.tick != null) renderDistance(view.k, s.total.bestK);
   const clearedWalls = s.walls.filter((w) => w.cleared);
   $('walls-count').innerHTML = `${clearedWalls.length} <span class="unit">/ ${s.walls.length}</span>`;
 
