@@ -256,6 +256,7 @@ footer { margin-top: 2.5rem; text-align: center; }
 .xpost:hover { background: #161b23; }
 
 footer .footnote { text-align: left; }
+footer .copyright { margin-top: 1.2rem; font-size: 0.75rem; color: var(--dimmer); }
 
 /* ── レスポンシブ ───────────────────────────── */
 
