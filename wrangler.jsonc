@@ -1,11 +1,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "poincare-box",
+  "routes": [{ "pattern": "poincare-box.int314.dev", "custom_domain": true }],
+  "workers_dev": true, // routes があると既定 false になる。旧 URL の 301 のために残す
   "main": "src/index.js",
   "compatibility_date": "2026-08-13",
   "assets": {
     "directory": "public",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // 旧 workers.dev → 新ホストの 301 を全パスで効かせる（既定ではアセット一致時に Worker を通らない）
+    "run_worker_first": true
   },
   "d1_databases": [
     {
