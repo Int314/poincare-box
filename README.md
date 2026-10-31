@@ -27,4 +27,4 @@ npm run verify
 npm run dev
 ```
 
-仕様は [docs/spec.md](docs/spec.md)。`public/core.js` の凍結パラメータは変更禁止です（§2 凍結条項）。
+`public/core.js` の凍結パラメータは変更禁止です（[docs/spec.md](docs/spec.md)）。
